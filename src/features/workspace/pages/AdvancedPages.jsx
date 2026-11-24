@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { products, stores } from "../../../data/demoData.js";
-import WorkspacePage from "./WorkspacePage.jsx";
 
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
