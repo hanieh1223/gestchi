@@ -18,15 +18,14 @@ function ProductDetailPage() {
   const quoteState = useMemo(() => {
     if (!product || !store || !method) return { quote: null, error: null };
     try {
-      const quote = downPayment === null
-        ? getDefaultInstallmentQuote(product.price, store, { id: methodId, ...method })
-        : calculateInstallmentQuote({
-            amount: product.price,
-            store,
-            method: { id: methodId, ...method },
-            months,
-            downPayment,
-          });
+      const defaultQuote = getDefaultInstallmentQuote(product.price, store, { id: methodId, ...method });
+      const quote = calculateInstallmentQuote({
+        amount: product.price,
+        store,
+        method: { id: methodId, ...method },
+        months,
+        downPayment: downPayment ?? defaultQuote.downAmount,
+      });
       return { quote, error: null };
     } catch (error) {
       return { quote: null, error: error.message };
