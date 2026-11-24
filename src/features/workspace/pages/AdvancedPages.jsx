@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { products, stores } from "../../../data/demoData.js";
+import WorkspacePage from "./WorkspacePage.jsx";
 
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
@@ -54,12 +55,14 @@ function ExtraTab({tab}){
  if(tab==="transactions") return <Panel title="تاریخچه تراکنش‌ها"><ul className="feature-list">{orders().map(x=><li key={x.id}>{x.id} · {money(x.total)} · {x.status} · {date(x.createdAt)}</li>)}</ul><p className="feature-note">سوابق نمایشی هستند و رسید بانکی محسوب نمی‌شوند.</p></Panel>;
  return <Panel title={tab==="support"?"مرکز پشتیبانی و تیکت":tab==="appeals"?"اعتراض به نتیجه استعلام":"یادآوری اقساط"}><form className="feature-form" onSubmit={submit}><Field label="عنوان" name="title" required/><Area label="توضیحات" name="message" rows="4" required/><Button>ثبت</Button></form><ul className="feature-list">{rows.map(x=><li key={x.id}>{x.title} · {x.status} · {date(x.createdAt)}</li>)}</ul></Panel>;
 }
-export function MatchRoute(){const [params]=useSearchParams(),tab=params.get("tab");if(["support","appeals","reminders","transactions"].includes(tab))return <Frame eyebrow="داشبورد مشتری" title="خدمات حساب کاربری"><ExtraTab tab={tab}/></Frame>;return <Frame eyebrow="بررسی شرایط خرید" title="محاسبه‌گر شرایط پرداخت"><Panel title="محاسبه اقساط" note="این صفحه در نسخه نمایشی فقط برآورد اولیه ارائه می‌کند."><Link className="button button--primary" to="/eligibility">رفتن به بررسی شرایط خرید</Link></Panel></Frame>;}
+export function MatchRoute(){const [params]=useSearchParams(),tab=params.get("tab");if(["support","appeals","reminders","transactions"].includes(tab))return <Frame eyebrow="داشبورد مشتری" title="خدمات حساب کاربری"><ExtraTab tab={tab}/></Frame>;return <WorkspacePage/>;}
 
 export function CustomerExtraPage(){
  const path=useLocation().pathname,[requests,setRequests]=useState(()=>read("ghestyar.creditRequests",[])),[notice,setNotice]=useState("");
+ const directTab=path==="/support"?"support":path==="/appeals"?"appeals":path==="/reminders"?"reminders":path==="/transactions"?"transactions":null;
  const identity=path==="/identity",credit=path==="/credit-details";
  const submit=e=>{e.preventDefault();const d=new FormData(e.currentTarget);if(identity){const id=String(d.get("nationalId")||"");if(!/^\d{10}$/.test(id)){setNotice("کد ملی باید ۱۰ رقم باشد.");return;}write("ghestyar.identity",{name:d.get("name"),last4:id.slice(-4),date:d.get("birthDate")});setNotice("پیش‌نویس اطلاعات هویتی در مرورگر ذخیره شد.");}else{const next=requests.concat([{id:Date.now(),amount:d.get("amount"),income:d.get("income"),reason:d.get("reason"),status:"در انتظار بررسی"}]);setRequests(next);write("ghestyar.creditRequests",next);setNotice("درخواست افزایش اعتبار ثبت شد.");}};
+ if(directTab)return <Frame eyebrow="داشبورد مشتری" title="خدمات حساب کاربری"><ExtraTab tab={directTab}/></Frame>;
  return <Frame eyebrow="خدمات مشتریان" title={identity?"احراز هویت":credit?"جزئیات اعتبار من":"درخواست افزایش اعتبار"}>{notice&&<p className="feature-note">{notice}</p>}
  {identity?<Panel title="اطلاعات هویتی" note="در نسخه آزمایشی مدرک هویتی بارگذاری نمی‌شود."><form className="feature-form" onSubmit={submit}><Field label="نام و نام خانوادگی" name="name" required/><Field label="کد ملی" name="nationalId" maxLength="10" required/><Field label="تاریخ تولد" name="birthDate" type="date" required/><Button>ذخیره پیش‌نویس</Button></form></Panel>
  :credit?<><div className="feature-metrics"><div><small>رتبه اعتباری</small><strong>نامشخص</strong></div><div><small>سقف اعتبار نمونه</small><strong>۵۰ میلیون تومان</strong></div><div><small>اعتبار مصرف‌شده</small><strong>۰ تومان</strong></div></div><Panel title="درخواست‌های افزایش اعتبار"><ul className="feature-list">{requests.map(x=><li key={x.id}>{money(x.amount)} · {x.reason} · {x.status}</li>)}</ul><Link to="/increase-credit">ثبت درخواست جدید</Link></Panel></>
