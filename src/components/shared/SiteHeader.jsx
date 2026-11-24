@@ -30,9 +30,9 @@ function SiteHeader() {
             <input aria-label="جستجوی کالا" placeholder="چه کالایی می‌خواهی؟" value={search} onChange={(event) => setSearch(event.target.value)} />
           </form>
           <div className="header-actions">
-            <Link to="/catalog" className="header-action">ورود / ثبت‌نام</Link>
-            <Link to="/catalog" className="header-action">سبد خرید</Link>
-            <Link to="/stores" className="header-action header-action--seller">پنل فروشگاه</Link>
+            <Link to="/login" className="header-action">ورود / ثبت‌نام</Link>
+            <Link to="/cart" className="header-action">سبد خرید</Link>
+            <Link to="/merchant" className="header-action header-action--seller">پنل فروشگاه</Link>
           </div>
         </div>
         <nav className="main-nav" aria-label="منوی اصلی">
