@@ -34,6 +34,7 @@ function App() {
             <Route path="invoice/:orderId" element={<ModulePlaceholderPage />} />
             <Route path="merchant/*" element={<ModulePlaceholderPage />} />
             <Route path="admin/*" element={<ModulePlaceholderPage />} />
+            <Route path="shop-site/:storeId/*" element={<ModulePlaceholderPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="home" element={<Navigate to="/" replace />} />
