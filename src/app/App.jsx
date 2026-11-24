@@ -8,11 +8,17 @@ import WorkspacePage from "../features/workspace/pages/WorkspacePage.jsx";
 import NotFoundPage from "../features/misc/pages/NotFoundPage.jsx";
 import ProductDetailPage from "../features/products/pages/ProductDetailPage.jsx";
 import StoreDetailPage from "../features/stores/pages/StoreDetailPage.jsx";
+import {
+  AdminWorkspacePage,
+  CustomerExtraPage,
+  MerchantWorkspacePage,
+  OrderDocumentPage,
+  ShopSitePage,
+} from "../features/workspace/pages/AdvancedPages.jsx";
 
-const pendingPaths = [
+const workspacePaths = [
   "cart", "checkout", "orders", "account", "login", "inquiry",
-  "my-inquiries", "match", "compare", "eligibility", "identity",
-  "credit-details", "increase-credit", "roles-audit",
+  "my-inquiries", "compare", "eligibility",
 ];
 
 function App() {
@@ -24,19 +30,30 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="stores" element={<StoresPage />} />
-            {pendingPaths.map((path) => (
+            {workspacePaths.map((path) => (
               <Route key={path} path={path} element={<WorkspacePage />} />
             ))}
+            <Route path="match" element={<WorkspacePage />} />
+            <Route path="identity" element={<CustomerExtraPage />} />
+            <Route path="credit-details" element={<CustomerExtraPage />} />
+            <Route path="increase-credit" element={<CustomerExtraPage />} />
+            <Route path="support" element={<CustomerExtraPage />} />
+            <Route path="appeals" element={<CustomerExtraPage />} />
+            <Route path="reminders" element={<CustomerExtraPage />} />
+            <Route path="transactions" element={<CustomerExtraPage />} />
             <Route path="product/:productId" element={<ProductDetailPage />} />
             <Route path="store/:storeId" element={<StoreDetailPage />} />
             <Route path="order/:orderId" element={<WorkspacePage />} />
-            <Route path="tracking/:orderId" element={<WorkspacePage />} />
-            <Route path="invoice/:orderId" element={<WorkspacePage />} />
-            <Route path="merchant/*" element={<WorkspacePage />} />
-            <Route path="admin/*" element={<WorkspacePage />} />
-            <Route path="shop-site/:storeId/*" element={<WorkspacePage />} />
+            <Route path="contract/:orderId" element={<OrderDocumentPage />} />
+            <Route path="tracking/:orderId" element={<OrderDocumentPage />} />
+            <Route path="gateway/:orderId" element={<OrderDocumentPage />} />
+            <Route path="invoice/:orderId" element={<OrderDocumentPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
+          <Route path="merchant/*" element={<MerchantWorkspacePage />} />
+          <Route path="admin/*" element={<AdminWorkspacePage />} />
+          <Route path="roles-audit" element={<AdminWorkspacePage />} />
+          <Route path="shop-site/:storeId/*" element={<ShopSitePage />} />
           <Route path="home" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
