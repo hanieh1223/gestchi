@@ -1,0 +1,93 @@
+import { useState } from "react";
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { products, stores } from "../../../data/demoData.js";
+
+const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
+const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const money = (v) => new Intl.NumberFormat("fa-IR").format(Number(v) || 0) + " تومان";
+const date = (v) => v ? new Date(v).toLocaleDateString("fa-IR") : "—";
+const orders = () => read("ghestyar.orders", []);
+const Panel = ({ title, children, note }) => <section className="feature-panel"><h2>{title}</h2>{note && <p className="feature-note">{note}</p>}{children}</section>;
+const Field = ({ label, ...props }) => <label className="feature-field"><span>{label}</span><input {...props}/></label>;
+const Area = ({ label, ...props }) => <label className="feature-field"><span>{label}</span><textarea {...props}/></label>;
+const Button = ({ children, ...props }) => <button className="button button--primary" {...props}>{children}</button>;
+const Empty = ({ children }) => <div className="feature-empty">{children}</div>;
+const Status = ({ children }) => <span className="feature-status">{children}</span>;
+const Frame = ({ eyebrow, title, children }) => <main className="container feature-page"><header className="feature-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1></div><Link className="button button--secondary" to="/">بازگشت به سایت</Link></header>{children}</main>;
+
+export function AdminWorkspacePage() {
+ const path=useLocation().pathname, audit=path==="/roles-audit", [roles,setRoles]=useState(()=>read("ghestyar.roleAssignments",[]));
+ const logs=read("ghestyar.auditLogs",[]), os=orders();
+ const addRole=(e)=>{e.preventDefault();const d=new FormData(e.currentTarget);const next=roles.concat([{id:Date.now(),user:d.get("user"),role:d.get("role")}]);setRoles(next);write("ghestyar.roleAssignments",next);e.currentTarget.reset();};
+ return <Frame eyebrow="مدیریت مرکزی قسط‌یار" title={audit?"نقش‌ها و گزارش فعالیت":"پنل مدیریت سامانه"}>
+  <nav className="feature-tabs"><Link to="/admin">نمای کلی</Link><Link to="/roles-audit">نقش‌ها و گزارش فعالیت</Link><Link to="/merchant">پنل فروشنده</Link></nav>
+  {audit?<><Panel title="تخصیص نقش کاربری" note="تغییر نقش در این نسخه فقط در مرورگر ذخیره می‌شود و کنترل دسترسی واقعی ایجاد نمی‌کند."><form className="feature-form" onSubmit={addRole}><Field label="نام کاربر" name="user" required/><label className="feature-field"><span>نقش</span><select name="role"><option>مشتری</option><option>فروشنده</option><option>مدیر سامانه</option></select></label><Button>ثبت نقش</Button></form></Panel><Panel title="نقش‌های ثبت‌شده"><ul className="feature-list">{roles.map(x=><li key={x.id}>{x.user} — {x.role}</li>)}</ul></Panel><Panel title="گزارش رویدادها"><ul className="feature-list">{logs.slice().reverse().map((x,i)=><li key={x.id||i}>{x.action} · {x.detail||"—"} · {date(x.at)}</li>)}</ul>{!logs.length&&<Empty>هنوز رویدادی ثبت نشده است.</Empty>}</Panel></>
+  :<><div className="feature-metrics"><div><small>فروشگاه‌ها</small><strong>{stores.length}</strong></div><div><small>محصولات</small><strong>{products.length}</strong></div><div><small>سفارش‌ها</small><strong>{os.length}</strong></div><div><small>نقش‌های تعریف‌شده</small><strong>{roles.length}</strong></div></div><div className="feature-grid feature-grid--links">{[["/stores","فروشگاه‌ها"],["/catalog","محصولات"],["/roles-audit","نقش‌ها و گزارش فعالیت"],["/merchant","پنل فروشنده"]].map(x=><Link className="feature-link-card" to={x[0]} key={x[0]}>{x[1]} ←</Link>)}</div><Panel title="آخرین سفارش‌ها"><ul className="feature-list">{os.slice(0,8).map(x=><li key={x.id}><Link to={"/order/"+x.id}>{x.id}</Link> · {x.name||"—"} · {money(x.total)} · {x.status}</li>)}</ul>{!os.length&&<Empty>سفارشی ثبت نشده است.</Empty>}</Panel><p className="feature-note">ورود مدیر، سطح دسترسی، گزارش ممیزی و داده‌های عملیاتی باید در بک‌اند امن پیاده‌سازی شوند.</p></>}
+ </Frame>;
+}
+
+const nav=[["/merchant","نمای کلی"],["/merchant/products","محصولات"],["/merchant/requests","سفارش‌ها"],["/merchant/inquiries","استعلام‌ها"],["/merchant/rules","شرایط اقساط"],["/merchant/settlements","تسویه‌حساب"],["/merchant/leads","سرنخ‌های فروش"],["/merchant/discounts","تخفیف‌ها"],["/merchant/theme","قالب فروشگاه"]];
+export function MerchantWorkspacePage(){
+ const path=useLocation().pathname,[productsLocal,setProducts]=useState(()=>read("ghestyar.merchantProducts",[])),[promos,setPromos]=useState(()=>read("ghestyar.promotions",[])),[notice,setNotice]=useState("");
+ const os=orders(), inquiries=read("ghestyar.inquiries",[]), leads=read("ghestyar.leads",[]);
+ const addProduct=e=>{e.preventDefault();const d=new FormData(e.currentTarget),next=productsLocal.concat([{id:Date.now(),name:d.get("name"),price:Number(d.get("price")),stock:Number(d.get("stock"))}]);setProducts(next);write("ghestyar.merchantProducts",next);e.currentTarget.reset();setNotice("محصول اضافه شد.");};
+ const addPromo=e=>{e.preventDefault();const d=new FormData(e.currentTarget),next=promos.concat([{id:Date.now(),title:d.get("title"),code:String(d.get("code")).toUpperCase(),value:Number(d.get("value")),active:true}]);setPromos(next);write("ghestyar.promotions",next);e.currentTarget.reset();setNotice("کد تخفیف ثبت شد.");};
+ const toggle=id=>{const next=promos.map(x=>x.id===id?{...x,active:!x.active}:x);setPromos(next);write("ghestyar.promotions",next);};
+ const detailId=path.split("/")[3], detail=os.find(x=>x.id===detailId);
+ const title=(nav.find(x=>x[0]===path)||[])[1]||"جزئیات سفارش";
+ let body;
+ if(path==="/merchant/products") body=<Panel title="مدیریت محصولات"><form className="feature-form" onSubmit={addProduct}><Field label="نام محصول" name="name" required/><Field label="قیمت" name="price" type="number" min="1" required/><Field label="موجودی" name="stock" type="number" min="0" required/><Button>افزودن محصول</Button></form><ul className="feature-list">{products.concat(productsLocal).map(x=><li key={x.id}>{x.name} · {money(x.price)} · موجودی {x.stock}</li>)}</ul></Panel>;
+ else if(path==="/merchant/requests"||detailId) body=<Panel title={detailId?"جزئیات سفارش":"سفارش‌های فروشگاه"}>{detail?<><p>خریدار: {detail.name}</p><p>تلفن: {detail.phone}</p><p>نشانی: {detail.address}</p><p>مبلغ: {money(detail.total)}</p><Link to={"/order/"+detailId}>نمایش سفارش مشتری</Link></>:<ul className="feature-list">{os.map(x=><li key={x.id}><Link to={"/merchant/order/"+x.id}>{x.id}</Link> · {x.name} · {money(x.total)} · {x.status}</li>)}</ul>}</Panel>;
+ else if(path==="/merchant/inquiries") body=<Panel title="درخواست‌های استعلام"><ul className="feature-list">{inquiries.map((x,i)=><li key={x.id||i}>{x.name||"متقاضی"} · {x.topic||"اعتبارسنجی"} · {x.status||"در انتظار بررسی"}</li>)}</ul>{!inquiries.length&&<Empty>درخواستی ثبت نشده است.</Empty>}</Panel>;
+ else if(path==="/merchant/rules") body=<Panel title="شرایط اقساط"><form className="feature-form" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);write("ghestyar.merchantRules",{down:d.get("down"),months:d.get("months"),note:d.get("note")});setNotice("شرایط ذخیره شد.");}}><Field label="حداقل پیش‌پرداخت (درصد)" name="down" type="number" defaultValue="25"/><Field label="ماه‌های اقساط" name="months" defaultValue="3,6,12"/><Area label="توضیحات" name="note" rows="3"/><Button>ذخیره شرایط</Button></form></Panel>;
+ else if(path==="/merchant/settlements") body=<Panel title="تسویه‌حساب‌ها" note="این فهرست به حساب بانکی متصل نیست."><p>تعداد سفارش‌ها: {os.length}</p><p>مجموع سفارش‌ها: {money(os.reduce((s,x)=>s+Number(x.total||0),0))}</p></Panel>;
+ else if(path==="/merchant/leads") body=<Panel title="سرنخ‌های فروش"><ul className="feature-list">{leads.map((x,i)=><li key={i}>{x.name} · {x.contact} · {x.message}</li>)}</ul>{!leads.length&&<Empty>سرنخی ثبت نشده است.</Empty>}</Panel>;
+ else if(path==="/merchant/discounts") body=<Panel title="مدیریت کدهای تخفیف" note="اعمال تخفیف روی مبلغ پرداخت نیازمند اعتبارسنجی سمت سرور است."><form className="feature-form" onSubmit={addPromo}><Field label="عنوان" name="title" required/><Field label="کد" name="code" required/><Field label="مقدار" name="value" type="number" min="1" required/><Button>ثبت کد</Button></form><ul className="feature-list">{promos.map(x=><li key={x.id}>{x.title} · {x.code} · {x.value} · {x.active?"فعال":"غیرفعال"} <button className="button button--secondary" onClick={()=>toggle(x.id)}>تغییر وضعیت</button></li>)}</ul></Panel>;
+ else if(path==="/merchant/theme") body=<Panel title="قالب سایت فروشگاه"><form className="feature-form" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);write("ghestyar.shopTheme",{name:d.get("name"),tagline:d.get("tagline"),color:d.get("color"),about:d.get("about")});setNotice("تنظیمات ذخیره شد.");}}><Field label="نام فروشگاه" name="name" defaultValue={stores[0]?.name}/><Field label="شعار" name="tagline" defaultValue="خرید هوشمندانه و آسان"/><Field label="رنگ اصلی" name="color" type="color" defaultValue="#07527a"/><Area label="درباره فروشگاه" name="about" rows="3"/><Button>ذخیره و پیش‌نمایش</Button></form><Link to={"/shop-site/"+(stores[0]?.id||"home")}>مشاهده سایت فروشگاه</Link></Panel>;
+ else body=<><div className="feature-metrics"><div><small>محصولات فعال</small><strong>{products.length+productsLocal.length}</strong></div><div><small>سفارش‌ها</small><strong>{os.length}</strong></div><div><small>استعلام‌ها</small><strong>{inquiries.length}</strong></div><div><small>تخفیف‌ها</small><strong>{promos.length}</strong></div></div><div className="feature-grid feature-grid--links">{nav.slice(1).map(x=><Link className="feature-link-card" to={x[0]} key={x[0]}>{x[1]} ←</Link>)}</div></>;
+ return <Frame eyebrow="فضای فروشنده" title={title}><div className="feature-workspace"><aside className="feature-sidebar">{nav.map(x=><Link className={path===x[0]?"active":""} to={x[0]} key={x[0]}>{x[1]}</Link>)}<Link to="/admin">پنل مدیریت سامانه</Link></aside><div className="feature-main">{notice&&<p className="feature-note">{notice}</p>}{body}</div></div></Frame>;
+}
+
+function ExtraTab({tab}){
+ const [rows,setRows]=useState(()=>read("ghestyar."+tab,[]));
+ const submit=e=>{e.preventDefault();const d=new FormData(e.currentTarget),next=rows.concat([{id:Date.now(),title:d.get("title"),message:d.get("message"),createdAt:new Date().toISOString(),status:"در انتظار بررسی"}]);setRows(next);write("ghestyar."+tab,next);e.currentTarget.reset();};
+ if(tab==="transactions") return <Panel title="تاریخچه تراکنش‌ها"><ul className="feature-list">{orders().map(x=><li key={x.id}>{x.id} · {money(x.total)} · {x.status} · {date(x.createdAt)}</li>)}</ul><p className="feature-note">سوابق نمایشی هستند و رسید بانکی محسوب نمی‌شوند.</p></Panel>;
+ return <Panel title={tab==="support"?"مرکز پشتیبانی و تیکت":tab==="appeals"?"اعتراض به نتیجه استعلام":"یادآوری اقساط"}><form className="feature-form" onSubmit={submit}><Field label="عنوان" name="title" required/><Area label="توضیحات" name="message" rows="4" required/><Button>ثبت</Button></form><ul className="feature-list">{rows.map(x=><li key={x.id}>{x.title} · {x.status} · {date(x.createdAt)}</li>)}</ul></Panel>;
+}
+export function MatchRoute(){const [params]=useSearchParams(),tab=params.get("tab");if(["support","appeals","reminders","transactions"].includes(tab))return <Frame eyebrow="داشبورد مشتری" title="خدمات حساب کاربری"><ExtraTab tab={tab}/></Frame>;return <Frame eyebrow="بررسی شرایط خرید" title="محاسبه‌گر شرایط پرداخت"><Panel title="محاسبه اقساط" note="این صفحه در نسخه نمایشی فقط برآورد اولیه ارائه می‌کند."><Link className="button button--primary" to="/eligibility">رفتن به بررسی شرایط خرید</Link></Panel></Frame>;}
+
+export function CustomerExtraPage(){
+ const path=useLocation().pathname,[requests,setRequests]=useState(()=>read("ghestyar.creditRequests",[])),[notice,setNotice]=useState("");
+ const identity=path==="/identity",credit=path==="/credit-details";
+ const submit=e=>{e.preventDefault();const d=new FormData(e.currentTarget);if(identity){const id=String(d.get("nationalId")||"");if(!/^\d{10}$/.test(id)){setNotice("کد ملی باید ۱۰ رقم باشد.");return;}write("ghestyar.identity",{name:d.get("name"),last4:id.slice(-4),date:d.get("birthDate")});setNotice("پیش‌نویس اطلاعات هویتی در مرورگر ذخیره شد.");}else{const next=requests.concat([{id:Date.now(),amount:d.get("amount"),income:d.get("income"),reason:d.get("reason"),status:"در انتظار بررسی"}]);setRequests(next);write("ghestyar.creditRequests",next);setNotice("درخواست افزایش اعتبار ثبت شد.");}};
+ return <Frame eyebrow="خدمات مشتریان" title={identity?"احراز هویت":credit?"جزئیات اعتبار من":"درخواست افزایش اعتبار"}>{notice&&<p className="feature-note">{notice}</p>}
+ {identity?<Panel title="اطلاعات هویتی" note="در نسخه آزمایشی مدرک هویتی بارگذاری نمی‌شود."><form className="feature-form" onSubmit={submit}><Field label="نام و نام خانوادگی" name="name" required/><Field label="کد ملی" name="nationalId" maxLength="10" required/><Field label="تاریخ تولد" name="birthDate" type="date" required/><Button>ذخیره پیش‌نویس</Button></form></Panel>
+ :credit?<><div className="feature-metrics"><div><small>رتبه اعتباری</small><strong>نامشخص</strong></div><div><small>سقف اعتبار نمونه</small><strong>۵۰ میلیون تومان</strong></div><div><small>اعتبار مصرف‌شده</small><strong>۰ تومان</strong></div></div><Panel title="درخواست‌های افزایش اعتبار"><ul className="feature-list">{requests.map(x=><li key={x.id}>{money(x.amount)} · {x.reason} · {x.status}</li>)}</ul><Link to="/increase-credit">ثبت درخواست جدید</Link></Panel></>
+ :<Panel title="فرم افزایش سقف اعتبار"><form className="feature-form" onSubmit={submit}><Field label="مبلغ درخواستی (تومان)" name="amount" type="number" min="1000000" required/><Field label="درآمد ماهانه (تومان)" name="income" type="number" min="0" required/><Area label="دلیل درخواست" name="reason" minLength="5" required/><Button>ثبت درخواست</Button></form><ul className="feature-list">{requests.map(x=><li key={x.id}>{money(x.amount)} · {x.status}</li>)}</ul></Panel>}</Frame>;
+}
+
+export function OrderDocumentPage(){
+ const {orderId}=useParams(),path=useLocation().pathname,type=path.split("/")[1],[notice,setNotice]=useState("");
+ const os=orders(),order=os.find(x=>x.id===orderId),[step,setStep]=useState(()=>read("ghestyar.shipping."+orderId,1));
+ if(!order)return <Frame eyebrow="سفارش" title="سفارش پیدا نشد"><Empty>سفارش در مرورگر فعلی پیدا نشد. ابتدا سفارش آزمایشی ثبت کنید.</Empty><Link to="/orders">بازگشت به سفارش‌ها</Link></Frame>;
+ const update=patch=>write("ghestyar.orders",os.map(x=>x.id===orderId?{...x,...patch}:x));
+ const steps=["ثبت سفارش","تأیید فروشگاه","آماده‌سازی","تحویل به شرکت ارسال","در مسیر تحویل","تحویل‌شده"];
+ const title=type==="contract"?"قرارداد خرید":type==="tracking"?"رهگیری سفارش":type==="gateway"?"پرداخت آزمایشی":"فاکتور سفارش";
+ return <Frame eyebrow={"سفارش "+orderId} title={title}>
+ {type==="tracking"?<Panel title="مراحل ارسال"><ol className="feature-steps">{steps.map((x,i)=><li key={x}><button className={i<=step?"active":""} onClick={()=>{const n=Math.min(5,i);setStep(n);write("ghestyar.shipping."+orderId,n);}}>{x}</button></li>)}</ol><p className="feature-note">مراحل حمل‌ونقل نمایشی‌اند و به شرکت ارسال متصل نیستند.</p></Panel>
+ :type==="gateway"?<Panel title="پرداخت سفارش" note="اطلاعات کارت بانکی وارد نکنید؛ درگاه واقعی متصل نیست."><p>مبلغ سفارش: <b>{money(order.total)}</b></p><Button onClick={()=>{update({status:"پرداخت آزمایشی ثبت شد"});setNotice("وضعیت نمایشی سفارش تغییر کرد؛ تراکنش بانکی انجام نشده است.");}}>ثبت پرداخت آزمایشی</Button>{notice&&<p className="feature-note">{notice}</p>}</Panel>
+ :type==="contract"?<Panel title={"قرارداد شماره "+order.id}><p>خریدار: {order.name||"—"}</p><p>شماره همراه: {order.phone||"—"}</p><p>تاریخ: {date(order.createdAt)}</p><p>مبلغ: {money(order.total)}</p><hr/><p>این صفحه پیش‌نمایش قرارداد است و سند حقوقی معتبر محسوب نمی‌شود. متن نهایی باید توسط مشاور حقوقی بررسی و امضای معتبر ثبت شود.</p><Button onClick={()=>window.print()}>چاپ / ذخیره PDF</Button></Panel>
+ :<Panel title="فاکتور سفارش"><p>شماره: {order.id}</p><p>تاریخ: {date(order.createdAt)}</p><ul className="feature-list">{(order.items||[]).map(x=><li key={x.id}>{x.name} × {x.qty} · {money(x.price*x.qty)}</li>)}</ul><h3>جمع کل: {money(order.total)}</h3><p className="feature-note">این فاکتور نمونه است و جایگزین فاکتور رسمی مالیاتی نیست.</p><Button onClick={()=>window.print()}>چاپ فاکتور</Button></Panel>}
+ </Frame>;
+}
+
+export function ShopSitePage(){
+ const {storeId}=useParams(),sub=useLocation().pathname.split("/").filter(Boolean)[2]||"home",store=stores.find(x=>x.id===storeId),theme=read("ghestyar.shopTheme",{});
+ const [sent,setSent]=useState(false),items=products.filter(x=>x.storeId===storeId);
+ if(!store)return <Frame eyebrow="فروشگاه" title="فروشگاه پیدا نشد"><Link to="/stores">بازگشت به فروشگاه‌ها</Link></Frame>;
+ return <main className="feature-shop" style={{"--shop-color":theme.color||"#07527a"}}><header className="feature-shop__header"><div className="container"><Link to={"/shop-site/"+storeId}>{theme.name||store.name}</Link><nav><Link to={"/shop-site/"+storeId}>خانه</Link><Link to={"/shop-site/"+storeId+"/about"}>درباره ما</Link><Link to={"/shop-site/"+storeId+"/contact"}>تماس</Link><Link to="/cart">سبد خرید</Link></nav></div></header>
+ {sub==="about"?<section className="container feature-shop__content"><h1>{theme.name||store.name}</h1><p>{theme.about||store.description}</p></section>
+ :sub==="contact"?<section className="container feature-shop__content"><h1>تماس با ما</h1><p>تلفن: {theme.phone||"درج نشده"}</p><p>نشانی: {theme.address||"درج نشده"}</p><form className="feature-form" onSubmit={e=>{e.preventDefault();setSent(true);}}><Field label="نام" required/><Field label="راه ارتباطی" required/><Area label="پیام" rows="4" required/><Button>ارسال پیام نمایشی</Button>{sent&&<p className="feature-note">فرم به‌صورت آزمایشی تکمیل شد؛ پیام ارسال نشده است.</p>}</form></section>
+ :<><section className="feature-shop__hero"><div className="container"><small>فروشگاه عضو قسط‌یار</small><h1>{theme.tagline||"خرید هوشمندانه، آسان و اقساطی"}</h1><p>{store.description}</p></div></section><section className="container feature-shop__content"><h2>محصولات فروشگاه</h2><div className="feature-product-grid">{items.map(x=><article className="feature-product" key={x.id}><span>{x.icon}</span><h3>{x.name}</h3><b>{money(x.price)}</b><Link to={"/product/"+x.id}>مشاهده محصول</Link></article>)}</div></section></>}
+ <footer className="feature-shop__footer"><div className="container">{theme.name||store.name} · فروشگاه عضو قسط‌یار</div></footer></main>;
+}
