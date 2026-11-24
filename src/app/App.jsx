@@ -6,6 +6,8 @@ import CatalogPage from "../features/catalog/pages/CatalogPage.jsx";
 import StoresPage from "../features/stores/pages/StoresPage.jsx";
 import ModulePlaceholderPage from "../features/misc/pages/ModulePlaceholderPage.jsx";
 import NotFoundPage from "../features/misc/pages/NotFoundPage.jsx";
+import ProductDetailPage from "../features/products/pages/ProductDetailPage.jsx";
+import StoreDetailPage from "../features/stores/pages/StoreDetailPage.jsx";
 
 const pendingPaths = [
   "cart", "checkout", "orders", "account", "login", "inquiry",
@@ -25,8 +27,8 @@ function App() {
             {pendingPaths.map((path) => (
               <Route key={path} path={path} element={<ModulePlaceholderPage />} />
             ))}
-            <Route path="product/:productId" element={<ModulePlaceholderPage />} />
-            <Route path="store/:storeId" element={<ModulePlaceholderPage />} />
+            <Route path="product/:productId" element={<ProductDetailPage />} />
+            <Route path="store/:storeId" element={<StoreDetailPage />} />
             <Route path="order/:orderId" element={<ModulePlaceholderPage />} />
             <Route path="tracking/:orderId" element={<ModulePlaceholderPage />} />
             <Route path="invoice/:orderId" element={<ModulePlaceholderPage />} />
