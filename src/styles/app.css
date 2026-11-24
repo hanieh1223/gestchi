@@ -316,3 +316,11 @@ body { color: #183247; background: var(--color-pale-blue); font-family: Vazirmat
 
 .product-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
 .product-actions .button{flex:1 1 auto}
+
+
+.checkout-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.checkout-feature-grid>.feature-panel{margin:0}
+.feature-consent{display:flex;align-items:flex-start;gap:9px;margin:15px 0;font-size:12px;line-height:2}
+.feature-consent input{margin-top:7px}
+.feature-error{padding:10px 12px;border:1px solid #efc8c4;border-radius:9px;background:#fff1ef;color:#a13f3b;font-size:12px}
+@media(max-width:760px){.checkout-feature-grid{grid-template-columns:1fr}}
