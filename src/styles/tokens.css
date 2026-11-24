@@ -1,25 +1,36 @@
 :root {
   color-scheme: light;
-  font-family: Tahoma, Arial, sans-serif;
-  color: #172033;
-  background: #f7f8fa;
-
+  font-family: "Vazirmatn", Tahoma, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --color-text: #172033;
-  --color-muted: #64748b;
-  --color-background: #f7f8fa;
+  --color-navy: #043653;
+  --color-blue: #07527a;
+  --color-sand: #d6c3a5;
+  --color-sand-dark: #c9ae8a;
+  --color-text: #143044;
+  --color-muted: #62798c;
+  --color-background: #f5f8fc;
   --color-surface: #ffffff;
-  --color-border: #e8ebf0;
-  --font-family-base: Tahoma, Arial, sans-serif;
+  --color-soft: #e3eef6;
+  --color-border: #dbe6ef;
+  --color-success: #28764c;
+  --color-warning: #996000;
+  --color-danger: #ba4847;
+
+  --font-family-base: "Vazirmatn", Tahoma, Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
 
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
+  --radius-xl: 26px;
 
-  --shadow-soft: 0 12px 40px rgb(23 32 51 / 5%);
-  --container-width: 1200px;
+  --shadow-soft: 0 12px 36px rgb(21 51 72 / 7%);
+  --container-width: 1210px;
 }
