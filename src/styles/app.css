@@ -312,3 +312,7 @@ body { color: #183247; background: var(--color-pale-blue); font-family: Vazirmat
 .feature-warning{background:#fff5e8;border:1px solid #eed8b2;color:#805d20}
 .feature-success{background:#edf7f1;border:1px solid #c9e4d4;color:#285d45}
 .feature-warning ul{margin:8px 0 0;padding-right:20px}
+
+
+.product-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.product-actions .button{flex:1 1 auto}
