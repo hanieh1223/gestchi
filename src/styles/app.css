@@ -306,3 +306,9 @@ body { color: #183247; background: var(--color-pale-blue); font-family: Vazirmat
 .feature-summary{padding:15px;border:1px solid var(--color-line);border-radius:12px;background:#f5f8fc}
 .feature-summary p{margin:5px 0;font-size:12px}
 @media(max-width:600px){.feature-steps{display:grid;grid-template-columns:1fr}.feature-actions>*{flex:1}}
+
+
+.feature-warning,.feature-success{padding:15px;border-radius:12px;font-size:12px;line-height:2}
+.feature-warning{background:#fff5e8;border:1px solid #eed8b2;color:#805d20}
+.feature-success{background:#edf7f1;border:1px solid #c9e4d4;color:#285d45}
+.feature-warning ul{margin:8px 0 0;padding-right:20px}
