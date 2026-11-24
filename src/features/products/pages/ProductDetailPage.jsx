@@ -14,6 +14,10 @@ function ProductDetailPage() {
   const method = store?.methods?.[methodId];
   const [months, setMonths] = useState(method?.months?.includes(6) ? 6 : method?.months?.[0] ?? 0);
   const [downPayment, setDownPayment] = useState(null);
+  const [favorites, setFavorites] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ghestyar.favorites")) ?? []; } catch { return []; }
+  });
+  const [cartNotice, setCartNotice] = useState("");
 
   const quoteState = useMemo(() => {
     if (!product || !store || !method) return { quote: null, error: null };
@@ -36,6 +40,27 @@ function ProductDetailPage() {
     return <Container className="page-section"><section className="empty-state"><h1>کالا پیدا نشد</h1><Link className="button button--primary" to="/catalog">بازگشت به کالاها</Link></section></Container>;
   }
 
+  function toggleFavorite() {
+    const next = favorites.includes(productId) ? favorites.filter((id) => id !== productId) : [...favorites, productId];
+    setFavorites(next);
+    localStorage.setItem("ghestyar.favorites", JSON.stringify(next));
+  }
+
+  function addToCart() {
+    let current = [];
+    try { current = JSON.parse(localStorage.getItem("ghestyar.cart")) ?? []; } catch { current = []; }
+    if (current.length && !current.every((item) => item.storeId === product.storeId)) {
+      setCartNotice("سبد خرید فقط می‌تواند شامل محصولات یک فروشگاه باشد. ابتدا سفارش فعلی را نهایی یا سبد را خالی کنید.");
+      return;
+    }
+    const found = current.find((item) => item.id === product.id);
+    const next = found
+      ? current.map((item) => item.id === product.id ? { ...item, qty: item.qty + 1 } : item)
+      : [...current, { id: product.id, name: product.name, price: product.price, qty: 1, storeId: product.storeId }];
+    localStorage.setItem("ghestyar.cart", JSON.stringify(next));
+    setCartNotice("محصول به سبد خرید اضافه شد.");
+  }
+
   function handleMethodChange(event) {
     const nextId = event.target.value;
     const nextMethod = store.methods[nextId];
@@ -55,6 +80,12 @@ function ProductDetailPage() {
           <p>{product.description}</p>
           <strong className="product-price">{formatCurrency(product.price)}</strong>
           <p className="muted">موجودی نمایشی: {product.stock.toLocaleString("fa-IR")} عدد</p>
+          <div className="product-actions">
+            <button className="button button--primary" type="button" onClick={addToCart}>افزودن به سبد خرید</button>
+            <button className="button button--secondary" type="button" onClick={toggleFavorite}>{favorites.includes(productId) ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}</button>
+            <Link className="button button--secondary" to="/cart">مشاهده سبد خرید</Link>
+          </div>
+          {cartNotice ? <p className="feature-note" role="status">{cartNotice}</p> : null}
           <h2>مشخصات کالا</h2>
           <dl className="spec-list">{Object.entries(product.specs ?? {}).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>
         </div>
