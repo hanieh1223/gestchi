@@ -1,34 +1,79 @@
-# Gestchi
+# Gestchi | گشتچی
 
-React application bootstrapped with [Vite](https://vite.dev/).
+پروژه فرانت‌اند گشتچی با React و Vite؛ با ساختار ماژولار، تنظیمات کیفیت کد و پشتیبانی اولیه از زبان فارسی و راست‌چین.
 
-## Requirements
+## پیش‌نیازها
 
-- Node.js 20.19+ or 22.12+
+- Node.js 20.19+ یا 22.12+
+- npm
 
-## Getting started
+## راه‌اندازی
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Available scripts
+## فرمان‌ها
 
-- `npm run dev` — start the development server
-- `npm run build` — create a production build
-- `npm run preview` — preview the production build
+| فرمان | کاربرد |
+| --- | --- |
+| `npm run dev` | اجرای سرور توسعه |
+| `npm run build` | ساخت نسخه production |
+| `npm run preview` | مشاهده خروجی production |
+| `npm run lint` | بررسی خطاهای کدنویسی |
+| `npm run lint:fix` | اصلاح خودکار موارد قابل اصلاح |
+| `npm run format` | قالب‌بندی فایل‌ها با Prettier |
+| `npm run format:check` | بررسی یکپارچگی قالب‌بندی |
 
-## Project structure
+## ساختار پروژه
 
 ```text
 gestchi/
-├── index.html
+├── public/                  # فایل‌های استاتیک با آدرس مستقیم
 ├── src/
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── .gitignore
-├── package.json
-└── README.md
+│   ├── app/                 # نقطه اتصال و پیکربندی سطح برنامه
+│   ├── assets/              # تصاویر، آیکون‌ها و فایل‌های واردشونده در کد
+│   ├── components/
+│   │   ├── ui/              # اجزای پایه و عمومی رابط کاربری
+│   │   └── shared/          # اجزای مشترک بین قابلیت‌ها
+│   ├── features/            # ماژول‌های مستقل هر قابلیت محصول
+│   ├── hooks/               # هوک‌های مشترک React
+│   ├── layouts/             # چیدمان‌های مشترک صفحات
+│   ├── lib/                 # راه‌اندازی و پیکربندی کتابخانه‌ها
+│   ├── services/            # ارتباط با API و سرویس‌های خارجی
+│   ├── styles/              # توکن‌ها و استایل‌های سراسری
+│   ├── utils/               # توابع کمکی بدون وابستگی به رابط کاربری
+│   └── main.jsx             # ورودی React
+├── .env.example             # نمونه متغیرهای محیطی
+├── eslint.config.js         # قوانین بررسی کد
+├── vite.config.js           # پیکربندی Vite
+└── package.json
 ```
+
+## الگوی توسعه قابلیت‌ها
+
+هر قابلیت مستقل و بزرگ در پوشه جداگانه‌ای داخل `src/features` قرار می‌گیرد. برای مثال:
+
+```text
+src/features/example/
+├── components/
+├── hooks/
+├── services/
+├── utils/
+└── index.js
+```
+
+فایل‌ها و اجزایی که فقط به همان قابلیت مربوط‌اند، داخل همان ماژول می‌مانند. موارد واقعاً مشترک در `components/shared`، `components/ui` یا پوشه‌های عمومی قرار می‌گیرند.
+
+## متغیرهای محیطی
+
+برای توسعه محلی، از روی `.env.example` یک فایل `.env.local` بسازید. متغیرهایی که در کد مرورگر استفاده می‌شوند باید با پیشوند `VITE_` شروع شوند؛ اطلاعات محرمانه را هرگز در متغیرهای سمت کلاینت قرار ندهید.
+
+## اصول پروژه
+
+- کامپوننت‌ها تا حد امکان کوچک و تک‌مسئولیتی باشند.
+- منطق هر قابلیت در ماژول خودش نگهداری شود.
+- از تکرار کد و ایجاد abstraction زودهنگام پرهیز شود.
+- وابستگی جدید فقط در صورت نیاز واقعی محصول اضافه شود.
+- قبل از ثبت تغییرات، lint و build اجرا شوند.
