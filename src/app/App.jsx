@@ -10,7 +10,9 @@ import ProductDetailPage from "../features/products/pages/ProductDetailPage.jsx"
 import StoreDetailPage from "../features/stores/pages/StoreDetailPage.jsx";
 import {
   AdminWorkspacePage,
+  CustomerAccountPage,
   CustomerExtraPage,
+  CustomerInquiriesPage,
   MerchantWorkspacePage,
   MatchRoute,
   OrderDocumentPage,
@@ -18,8 +20,7 @@ import {
 } from "../features/workspace/pages/AdvancedPages.jsx";
 
 const workspacePaths = [
-  "cart", "checkout", "orders", "account", "login", "inquiry",
-  "my-inquiries", "compare", "eligibility",
+  "cart", "checkout", "orders", "login", "compare", "eligibility",
 ];
 
 function App() {
@@ -35,6 +36,9 @@ function App() {
               <Route key={path} path={path} element={<WorkspacePage />} />
             ))}
             <Route path="match" element={<MatchRoute />} />
+            <Route path="account" element={<CustomerAccountPage />} />
+            <Route path="inquiry" element={<CustomerInquiriesPage />} />
+            <Route path="my-inquiries" element={<CustomerInquiriesPage />} />
             <Route path="identity" element={<CustomerExtraPage />} />
             <Route path="credit-details" element={<CustomerExtraPage />} />
             <Route path="increase-credit" element={<CustomerExtraPage />} />
