@@ -1,0 +1,25 @@
+:root {
+  color-scheme: light;
+  font-family: Tahoma, Arial, sans-serif;
+  color: #172033;
+  background: #f7f8fa;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-text: #172033;
+  --color-muted: #64748b;
+  --color-background: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-border: #e8ebf0;
+  --font-family-base: Tahoma, Arial, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-soft: 0 12px 40px rgb(23 32 51 / 5%);
+  --container-width: 1200px;
+}
