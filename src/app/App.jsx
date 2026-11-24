@@ -17,12 +17,13 @@ import {
   MatchRoute,
   ComparePage,
   EligibilityPage,
+  CheckoutPage,
   OrderDocumentPage,
   ShopSitePage,
 } from "../features/workspace/pages/AdvancedPages.jsx";
 
 const workspacePaths = [
-  "cart", "checkout", "orders", "login",
+  "cart", "orders", "login",
 ];
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             {workspacePaths.map((path) => (
               <Route key={path} path={path} element={<WorkspacePage />} />
             ))}
+            <Route path="checkout" element={<CheckoutPage />} />
             <Route path="match" element={<MatchRoute />} />
             <Route path="compare" element={<ComparePage />} />
             <Route path="eligibility" element={<EligibilityPage />} />
