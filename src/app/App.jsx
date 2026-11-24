@@ -1,15 +1,23 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import StorefrontLayout from "../layouts/StorefrontLayout.jsx";
+import HomePage from "../features/home/pages/HomePage.jsx";
+import CatalogPage from "../features/catalog/pages/CatalogPage.jsx";
+import StoresPage from "../features/stores/pages/StoresPage.jsx";
+import NotFoundPage from "../features/misc/pages/NotFoundPage.jsx";
+
 function App() {
   return (
-    <main className="app-shell">
-      <section className="welcome-panel" aria-labelledby="welcome-title">
-        <span className="welcome-panel__eyebrow">GESTCHI</span>
-        <h1 id="welcome-title">گشتچی؛ آماده توسعه</h1>
-        <p>
-          زیرساخت اصلی پروژه آماده است. قابلیت‌های محصول از اینجا به‌صورت ماژولار
-          و مرحله‌به‌مرحله توسعه پیدا می‌کنند.
-        </p>
-      </section>
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<StorefrontLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="stores" element={<StoresPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+        <Route path="home" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
