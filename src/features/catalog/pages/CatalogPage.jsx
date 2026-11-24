@@ -5,16 +5,17 @@ import ProductCard from "../../../components/shared/ProductCard.jsx";
 import SectionHeading from "../../../components/shared/SectionHeading.jsx";
 import { products, stores } from "../../../data/demoData.js";
 
+const storeById = Object.fromEntries(stores.map((store) => [store.id, store]));
+
 function CatalogPage() {
   const [params] = useSearchParams();
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [category, setCategory] = useState("all");
-  const storeById = Object.fromEntries(stores.map((store) => [store.id, store]));
   const categories = [...new Set(products.map((product) => product.category))];
   const filteredProducts = useMemo(() => products.filter((product) => {
     const matchesQuery = `${product.name} ${product.category} ${storeById[product.storeId]?.name ?? ""}`.toLocaleLowerCase("fa").includes(query.trim().toLocaleLowerCase("fa"));
     return matchesQuery && (category === "all" || product.category === category);
-  }), [category, query, storeById]);
+  }), [category, query]);
 
   return (
     <Container className="page-section">
