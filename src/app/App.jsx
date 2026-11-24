@@ -12,6 +12,7 @@ import {
   AdminWorkspacePage,
   CustomerExtraPage,
   MerchantWorkspacePage,
+  MatchRoute,
   OrderDocumentPage,
   ShopSitePage,
 } from "../features/workspace/pages/AdvancedPages.jsx";
@@ -33,7 +34,7 @@ function App() {
             {workspacePaths.map((path) => (
               <Route key={path} path={path} element={<WorkspacePage />} />
             ))}
-            <Route path="match" element={<WorkspacePage />} />
+            <Route path="match" element={<MatchRoute />} />
             <Route path="identity" element={<CustomerExtraPage />} />
             <Route path="credit-details" element={<CustomerExtraPage />} />
             <Route path="increase-credit" element={<CustomerExtraPage />} />
