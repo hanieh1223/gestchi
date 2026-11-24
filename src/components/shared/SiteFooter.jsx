@@ -11,10 +11,10 @@ function SiteFooter() {
             <p>قسط‌یار بستری برای مشاهده فروشگاه‌ها، مقایسه شرایط خرید نقدی و اقساطی و پیگیری سفارش‌هاست.</p>
             <small>شرایط نهایی خرید اعتباری بر اساس بررسی فروشگاه یا مرجع ارائه‌دهنده اعتبار تعیین می‌شود.</small>
           </div>
-          <div><h3>خرید و محصولات</h3><Link to="/catalog">مشاهده همه محصولات</Link><Link to="/stores">فروشگاه‌های طرف قرارداد</Link></div>
-          <div><h3>راهنمای قسط‌یار</h3><Link to="/catalog">انتخاب کالا</Link><Link to="/stores">شرایط فروشگاه‌ها</Link></div>
+          <div><h3>خرید و محصولات</h3><Link to="/catalog">مشاهده همه محصولات</Link><Link to="/stores">فروشگاه‌های طرف قرارداد</Link><Link to="/cart">سبد خرید</Link><Link to="/match">بررسی شرایط خرید من</Link></div>
+          <div><h3>خدمات مشتریان</h3><Link to="/inquiry">استعلام اعتبار و چک</Link><Link to="/credit-details">جزئیات اعتبار من</Link><Link to="/orders">سفارش‌ها و پیگیری</Link><Link to="/account">داشبورد و تراکنش‌ها</Link></div>
         </div>
-        <div className="footer-bottom">© تمامی حقوق این وب‌سایت محفوظ است.</div>
+        <div className="footer-bottom">© ۱۴۰۵ قسط‌یار · تمامی حقوق محفوظ است.</div>
       </Container>
     </footer>
   );
