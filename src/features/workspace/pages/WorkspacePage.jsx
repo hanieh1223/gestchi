@@ -35,6 +35,7 @@ function WorkspacePage() {
   const updateCart = (next) => { setCart(next); write(cartKey, next); };
   const addToCart = (item) => {
     const current = read(cartKey, []);
+    if (current.length && !current.some((row) => row.storeId === item.storeId)) { setNotice("هر سفارش فقط می‌تواند شامل محصولات یک فروشگاه باشد. سبد فعلی را ابتدا نهایی کنید یا خالی کنید."); return; }
     const found = current.find((row) => row.id === item.id);
     const next = found ? current.map((row) => row.id === item.id ? { ...row, qty: row.qty + 1 } : row) : [...current, { id: item.id, name: item.name, price: item.price, qty: 1, storeId: item.storeId }];
     updateCart(next); setNotice("محصول به سبد خرید اضافه شد.");
