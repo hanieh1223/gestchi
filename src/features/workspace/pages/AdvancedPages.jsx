@@ -14,7 +14,7 @@ const Area = ({ label, ...props }) => <label className="feature-field"><span>{la
 const Button = ({ children, ...props }) => <button className="button button--primary" {...props}>{children}</button>;
 const Empty = ({ children }) => <div className="feature-empty">{children}</div>;
 const Status = ({ children }) => <span className="feature-status">{children}</span>;
-const Frame = ({ eyebrow, title, children }) => <main className="container feature-page"><header className="feature-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1></div><Link className="button button--secondary" to="/">بازگشت به سایت</Link></header>{children}</main>;
+const Frame = ({ eyebrow, title, children }) => <div className="container feature-page"><header className="feature-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1></div><Link className="button button--secondary" to="/">بازگشت به سایت</Link></header>{children}</div>;
 
 export function AdminWorkspacePage() {
  const path=useLocation().pathname, audit=path==="/roles-audit", [roles,setRoles]=useState(()=>read("ghestyar.roleAssignments",[]));
