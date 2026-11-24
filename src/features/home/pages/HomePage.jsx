@@ -48,7 +48,7 @@ function HomePage() {
 
       <section className="match-banner">
         <div><span className="eyebrow">با چند پاسخ کوتاه</span><h2>کدام فروشگاه با توان پرداخت تو سازگارتر است؟</h2><p>مبلغی که می‌توانی نقد بدهی و قسط ماهانه دلخواه را مشخص کن.</p></div>
-        <Link className="button button--primary button--large" to="/catalog">پیدا کردن فروشگاه مناسب</Link>
+        <Link className="button button--primary button--large" to="/match">پیدا کردن فروشگاه مناسب</Link>
       </section>
     </Container>
   );
