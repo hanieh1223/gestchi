@@ -174,3 +174,62 @@ body { color: #183247; background: var(--color-pale-blue); font-family: Vazirmat
   .installment-controls, .quote-result { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .store-detail-hero { align-items: flex-start; padding: 18px; }
 }
+
+
+/* Workspace pages */
+.ws-page { padding-bottom: 52px; }
+.ws-heading { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:22px; }
+.ws-heading h1 { margin:5px 0; color:var(--color-navy); font-size:28px; }
+.ws-heading p,.ws-panel-head p { margin:0; color:var(--color-muted); font-size:12px; }
+.ws-panel { min-width:0; padding:22px; border:1px solid var(--color-line); border-radius:18px; background:#fff; box-shadow:var(--shadow-card); }
+.ws-panel + .ws-panel { margin-top:16px; }
+.ws-panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+.ws-panel-head h2 { margin:0 0 4px; color:var(--color-navy); font-size:17px; }
+.ws-form { display:grid; gap:14px; }
+.ws-form--narrow { max-width:480px; }
+.ws-field { display:grid; gap:6px; color:#435d70; font-size:12px; font-weight:700; }
+.ws-field input,.ws-field select,.ws-field textarea { width:100%; min-height:43px; padding:9px 12px; border:1px solid var(--color-line); border-radius:10px; outline:none; background:#fff; color:#183247; font:inherit; }
+.ws-field input:focus,.ws-field select:focus,.ws-field textarea:focus { border-color:var(--color-blue); box-shadow:0 0 0 3px rgb(7 82 122 / 9%); }
+.ws-two-col { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; align-items:start; }
+.ws-table-wrap { width:100%; overflow-x:auto; }
+.ws-table { width:100%; border-collapse:collapse; font-size:12px; text-align:right; }
+.ws-table th,.ws-table td { padding:13px 10px; border-bottom:1px solid var(--color-line); white-space:nowrap; }
+.ws-table th { color:var(--color-muted); background:#f7fafc; }
+.ws-qty { display:flex; align-items:center; gap:10px; }
+.ws-qty button { width:26px; height:26px; border:1px solid var(--color-line); border-radius:7px; background:#fff; cursor:pointer; }
+.ws-link { padding:0; border:0; background:none; color:var(--color-blue); cursor:pointer; font:inherit; font-weight:700; }
+.ws-total,.ws-total-line { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:16px; padding:16px; border-radius:12px; background:var(--color-soft-blue); color:var(--color-navy); }
+.ws-total-line { border-top:1px solid var(--color-line); border-radius:0; background:transparent; }
+.ws-list-row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--color-line); font-size:12px; }
+.ws-hint { color:var(--color-muted); font-size:11px; line-height:2; }
+.ws-empty { padding:30px 16px; border:1px dashed var(--color-line); border-radius:12px; color:var(--color-muted); text-align:center; font-size:13px; }
+.ws-empty a,.ws-card a,.ws-table a { color:var(--color-blue); font-weight:800; }
+.ws-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+.ws-metrics > div { display:grid; gap:6px; padding:17px; border:1px solid var(--color-line); border-radius:14px; background:#fff; }
+.ws-metrics span { color:var(--color-muted); font-size:11px; }
+.ws-metrics strong { color:var(--color-navy); font-size:16px; }
+.ws-calc-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.ws-calc-grid .ws-field { min-width:0; }
+.ws-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.ws-card { display:flex; min-width:0; flex-direction:column; align-items:flex-start; gap:7px; padding:16px; border:1px solid var(--color-line); border-radius:14px; background:#fff; }
+.ws-card h3 { margin:0; color:var(--color-navy); font-size:13px; }
+.ws-card p { margin:0; color:var(--color-muted); font-size:11px; }
+.ws-card-icon { display:grid; width:48px; height:48px; place-items:center; border-radius:13px; background:var(--color-soft-blue); font-size:26px; }
+.ws-card-actions { display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; font-size:12px; }
+.ws-shortcuts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+.ws-shortcut { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:17px; border:1px solid var(--color-line); border-radius:13px; background:#fff; color:var(--color-navy); font-size:12px; font-weight:800; }
+.ws-status { display:inline-flex; padding:4px 9px; border-radius:20px; font-size:10px; font-weight:800; }
+.ws-status--info { background:#e7f1f8; color:#07527a; }
+.ws-status--warning { background:#fff4df; color:#96620a; }
+.ws-status--success { background:#e7f5ed; color:#237448; }
+.ws-bullets { padding-inline-start:20px; color:var(--color-muted); font-size:12px; line-height:2.4; }
+.ws-notice { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:15px; padding:12px 15px; border:1px solid #c8e5d4; border-radius:11px; background:#effaf3; color:#216b42; font-size:12px; }
+.ws-notice button { border:0; background:none; color:inherit; cursor:pointer; font-size:20px; }
+.ws-dashboard { display:grid; grid-template-columns:220px minmax(0,1fr); gap:16px; align-items:start; }
+.ws-sidebar { display:grid; gap:5px; padding:15px; border:1px solid var(--color-line); border-radius:15px; background:#fff; }
+.ws-sidebar strong { padding:8px 10px 14px; color:var(--color-navy); }
+.ws-sidebar a { padding:10px; border-radius:9px; color:#4c6578; font-size:12px; }
+.ws-sidebar a.is-active,.ws-sidebar a:hover { background:var(--color-soft-blue); color:var(--color-navy); }
+.ws-dashboard-main { min-width:0; }
+@media(max-width:850px) { .ws-two-col { grid-template-columns:1fr; } .ws-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .ws-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .ws-dashboard { grid-template-columns:1fr; } .ws-sidebar { grid-template-columns:repeat(2,minmax(0,1fr)); } .ws-sidebar strong { grid-column:1/-1; } }
+@media(max-width:560px) { .ws-heading { align-items:flex-start; flex-direction:column; } .ws-heading h1 { font-size:23px; } .ws-panel { padding:15px; } .ws-calc-grid,.ws-shortcuts { grid-template-columns:1fr; } .ws-cards { grid-template-columns:1fr; } .ws-total { align-items:stretch; flex-direction:column; } .ws-metrics strong { font-size:13px; } .ws-sidebar { grid-template-columns:1fr; } }
