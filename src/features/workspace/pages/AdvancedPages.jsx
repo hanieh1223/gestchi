@@ -116,3 +116,38 @@ export function CustomerInquiriesPage(){
  <div className="feature-actions">{step>1&&<button className="button button--secondary" onClick={()=>setStep(step-1)}>مرحله قبل</button>}{step<3?<Button onClick={()=>{if(step===1&&(!draft.name.trim()||!/^09\d{9}$/.test(draft.phone))){setMessage("نام و شماره همراه معتبر را وارد کنید.");return;}setMessage("");setStep(step+1);}}>ادامه</Button>:<Button onClick={submit}>ثبت درخواست آزمایشی</Button>}</div>{message&&<p className="feature-note">{message}</p>}
  </Panel><p className="feature-note">ثبت این فرم به معنی تأیید اعتبار یا وضعیت چک نیست؛ نتیجه قطعی فقط از مرجع رسمی و با مجوز لازم قابل دریافت است.</p></Frame>;
 }
+
+
+export function ComparePage(){
+ const [selected,setSelected]=useState(()=>products.slice(0,2).map(x=>x.id));
+ const [months,setMonths]=useState(6);
+ const toggle=id=>setSelected(old=>old.includes(id)?old.filter(x=>x!==id):old.length<4?old.concat(id):old);
+ const chosen=products.filter(x=>selected.includes(x.id));
+ return <Frame eyebrow="مقایسه کالاها و شرایط پرداخت" title="مقایسه کالاها"><Panel title="انتخاب کالا برای مقایسه" note="حداکثر چهار کالا را انتخاب کنید؛ شرایط هر فروشگاه جداگانه محاسبه می‌شود."><div className="feature-product-grid">{products.map(x=><label className="feature-product" key={x.id}><span>{x.icon}</span><strong>{x.name}</strong><small>{money(x.price)}</small><input type="checkbox" checked={selected.includes(x.id)} onChange={()=>toggle(x.id)}/> افزودن به مقایسه</label>)}</div><label className="feature-field"><span>مدت اقساط</span><select value={months} onChange={e=>setMonths(Number(e.target.value))}><option value="3">۳ ماه</option><option value="6">۶ ماه</option><option value="12">۱۲ ماه</option><option value="18">۱۸ ماه</option></select></label></Panel>
+ {chosen.length?<Panel title="جدول مقایسه"><div className="feature-table-wrap"><table className="feature-table"><thead><tr><th>مشخصات</th>{chosen.map(x=><th key={x.id}>{x.name}</th>)}</tr></thead><tbody>
+ <tr><td>فروشگاه</td>{chosen.map(x=><td key={x.id}>{stores.find(s=>s.id===x.storeId)?.name||"—"}</td>)}</tr>
+ <tr><td>قیمت نقدی</td>{chosen.map(x=><td key={x.id}>{money(x.price)}</td>)}</tr>
+ <tr><td>حداقل پیش‌پرداخت</td>{chosen.map(x=><td key={x.id}>{(stores.find(s=>s.id===x.storeId)?.minDown||0)+"٪"}</td>)}</tr>
+ <tr><td>مبلغ پیش‌پرداخت</td>{chosen.map(x=>{const s=stores.find(y=>y.id===x.storeId),d=s?.minDown||0;return <td key={x.id}>{money(x.price*d/100)}</td>})}</tr>
+ <tr><td>قسط ماهانه تخمینی</td>{chosen.map(x=>{const s=stores.find(y=>y.id===x.storeId),rate=s?.plans?.[months];const d=s?.minDown||0;return <td key={x.id}>{rate===undefined?"این مدت در طرح نمونه نیست":money((x.price*(1-d/100)*(1+rate/100))/months)}</td>})}</tr>
+ <tr><td>مشاهده کالا</td>{chosen.map(x=><td key={x.id}><Link to={"/product/"+x.id}>جزئیات</Link></td>)}</tr>
+ </tbody></table></div><p className="feature-note">نرخ‌ها و پیش‌پرداخت‌ها از داده‌های نمونه فروشگاه‌ها گرفته شده‌اند؛ پیشنهاد قطعی یا تأیید اعتبار نیستند.</p></Panel>:<Empty>برای شروع، دست‌کم یک کالا را انتخاب کنید.</Empty>}
+ </Frame>;
+}
+
+export function EligibilityPage(){
+ const [storeId,setStoreId]=useState(stores[0]?.id||""),[methodId,setMethodId]=useState(""),[amount,setAmount]=useState("50000000"),[down,setDown]=useState("30"),[months,setMonths]=useState(6);
+ const store=stores.find(x=>x.id===storeId),methods=Object.entries(store?.methods||{}).filter(([,m])=>m.enabled);
+ const method=methods.find(x=>x[0]===methodId)?.[1]||methods[0]?.[1];
+ const finance=Number(amount)*Math.max(0,1-Number(down)/100),rate=store?.plans?.[months],monthly=rate===undefined?null:finance*(1+rate/100)/months;
+ const issues=[];if(method&&Number(down)<method.minDown)issues.push("پیش‌پرداخت کمتر از حداقل اعلام‌شده این روش است.");if(method&&finance>method.maxFinancing)issues.push("مبلغ تأمین مالی از سقف نمونه این روش بیشتر است.");if(method&&!method.months.includes(months))issues.push("مدت انتخاب‌شده در طرح این روش وجود ندارد.");
+ return <Frame eyebrow="بررسی شرایط خرید" title="کدام روش خرید با شرایط من سازگار است؟"><Panel title="مشخصات خرید و روش پرداخت" note="نتیجه بر اساس داده‌های نمونه فروشگاه‌ها محاسبه می‌شود و استعلام رسمی نیست."><div className="feature-form"><label className="feature-field"><span>فروشگاه</span><select value={storeId} onChange={e=>{setStoreId(e.target.value);setMethodId("");}}>{stores.map(x=><option value={x.id} key={x.id}>{x.name}</option>)}</select></label><label className="feature-field"><span>روش پرداخت</span><select value={methodId||methods[0]?.[0]||""} onChange={e=>setMethodId(e.target.value)}>{methods.map(([id,m])=><option value={id} key={id}>{id==="own"?"چک فروشگاه":id==="gold"?"وثیقه طلا":id==="bank"?"تسهیلات بانکی":"چک صیادی"}</option>)}</select></label><Field label="مبلغ کالا (تومان)" type="number" min="1" value={amount} onChange={e=>setAmount(e.target.value)}/><Field label="پیش‌پرداخت (درصد)" type="number" min="0" max="100" value={down} onChange={e=>setDown(e.target.value)}/><label className="feature-field"><span>تعداد ماه</span><select value={months} onChange={e=>setMonths(Number(e.target.value))}>{[3,6,12,18].map(x=><option key={x} value={x}>{x} ماه</option>)}</select></label></div></Panel>
+ <Panel title="نتیجه بررسی اولیه"><div className="feature-metrics"><div><small>پیش‌پرداخت</small><strong>{money(Number(amount)*Number(down)/100)}</strong></div><div><small>مانده تأمین مالی</small><strong>{money(finance)}</strong></div><div><small>قسط ماهانه تخمینی</small><strong>{monthly===null?"—":money(monthly)}</strong></div><div><small>سقف روش</small><strong>{money(method?.maxFinancing||0)}</strong></div></div>{issues.length?<div className="feature-warning"><b>نیازمند اصلاح شرایط</b><ul>{issues.map(x=><li key={x}>{x}</li>)}</ul></div>:<div className="feature-success"><b>از نظر اعداد نمونه، شرایط اولیه قابل بررسی است.</b><p>تأیید نهایی به استعلام و تصمیم فروشگاه یا تأمین‌کننده اعتبار وابسته است.</p></div>}</Panel></Frame>;
+}
+
+export function MatchPage(){
+ const [cash,setCash]=useState("15000000"),[monthly,setMonthly]=useState("5000000"),[duration,setDuration]=useState(12);
+ const budget=Number(cash),capacity=Number(monthly);
+ const suggestions=stores.map(s=>{const candidates=products.filter(p=>p.storeId===s.id);const matching=candidates.filter(p=>p.price>budget&&p.price<=budget+capacity*duration*1.15);return {store:s,products:matching};});
+ return <Frame eyebrow="پیدا کردن روش مناسب" title="خرید اقساطی متناسب با بودجه من"><Panel title="توان پرداخت خود را مشخص کنید" note="این ابزار برای پیشنهاد اولیه فروشگاه و کالا است؛ نتیجه اعتبارسنجی محسوب نمی‌شود."><div className="feature-form"><Field label="مبلغی که نقداً می‌توانید پرداخت کنید (تومان)" type="number" min="0" value={cash} onChange={e=>setCash(e.target.value)}/><Field label="حداکثر قسط ماهانه (تومان)" type="number" min="0" value={monthly} onChange={e=>setMonthly(e.target.value)}/><label className="feature-field"><span>مدت موردنظر</span><select value={duration} onChange={e=>setDuration(Number(e.target.value))}><option value="3">۳ ماه</option><option value="6">۶ ماه</option><option value="12">۱۲ ماه</option><option value="18">۱۸ ماه</option></select></label></div></Panel><Panel title="پیشنهادهای نزدیک به بودجه"><div className="feature-grid">{suggestions.map(x=><article className="feature-product" key={x.store.id}><h3>{x.store.name}</h3><p>{x.store.description}</p>{x.products.length?x.products.map(p=><div key={p.id}><b>{p.name}</b><p>{money(p.price)}</p><Link to={"/product/"+p.id}>مشاهده محصول</Link></div>):<small>در داده‌های نمونه کالای متناسبی پیدا نشد.</small>}<Link to={"/eligibility"}>بررسی شرایط خرید ←</Link></article>)}</div></Panel></Frame>;
+}
