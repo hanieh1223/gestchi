@@ -59,7 +59,7 @@ export function MatchRoute(){const [params]=useSearchParams(),tab=params.get("ta
 
 export function CustomerExtraPage({forcedTab}){
  const path=useLocation().pathname,[requests,setRequests]=useState(()=>read("ghestyar.creditRequests",[])),[notice,setNotice]=useState("");
- const directTab=forcedTab||(path==="/support"?"support":path==="/appeals"?"appeals":path==="/reminders"?"reminders":path==="/transactions"?"transactions":null);
+ const directTab=["support","appeals","reminders","transactions"].includes(forcedTab)?forcedTab:(path==="/support"?"support":path==="/appeals"?"appeals":path==="/reminders"?"reminders":path==="/transactions"?"transactions":null);
  const identity=(forcedTab||path)==="identity"||(forcedTab||path)==="/identity",credit=(forcedTab||path)==="credit-details"||(forcedTab||path)==="/credit-details";
  const submit=e=>{e.preventDefault();const d=new FormData(e.currentTarget);if(identity){const id=String(d.get("nationalId")||"");if(!/^\d{10}$/.test(id)){setNotice("کد ملی باید ۱۰ رقم باشد.");return;}write("ghestyar.identity",{name:d.get("name"),last4:id.slice(-4),date:d.get("birthDate")});setNotice("پیش‌نویس اطلاعات هویتی در مرورگر ذخیره شد.");}else{const next=requests.concat([{id:Date.now(),amount:d.get("amount"),income:d.get("income"),reason:d.get("reason"),status:"در انتظار بررسی"}]);setRequests(next);write("ghestyar.creditRequests",next);setNotice("درخواست افزایش اعتبار ثبت شد.");}};
  if(directTab)return <Frame eyebrow="داشبورد مشتری" title="خدمات حساب کاربری"><ExtraTab tab={directTab}/></Frame>;
