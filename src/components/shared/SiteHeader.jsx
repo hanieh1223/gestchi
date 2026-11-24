@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Container from "./Container.jsx";
 
@@ -10,10 +10,11 @@ const navigation = [
 
 function SiteHeader() {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   function handleSubmit(event) {
     event.preventDefault();
-    window.location.assign(`/catalog?q=${encodeURIComponent(search.trim())}`);
+    navigate(`/catalog?q=${encodeURIComponent(search.trim())}`);
   }
 
   return (
