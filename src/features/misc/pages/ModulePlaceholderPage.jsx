@@ -16,11 +16,14 @@ const moduleNames = {
   "/credit-details": "جزئیات اعتبار",
   "/increase-credit": "درخواست افزایش اعتبار",
   "/roles-audit": "نقش‌ها و گزارش فعالیت",
+  "/merchant": "پنل فروشنده",
+  "/admin": "پنل مدیریت",
+  "/shop-site": "وب‌سایت اختصاصی فروشگاه",
 };
 
 function ModulePlaceholderPage() {
   const { pathname } = useLocation();
-  const title = moduleNames[pathname] ?? "جزئیات";
+  const title = moduleNames[pathname] ?? (pathname.startsWith("/merchant/") ? "مدیریت فروشگاه" : pathname.startsWith("/admin/") ? "مدیریت سامانه" : pathname.startsWith("/shop-site/") ? "وب‌سایت اختصاصی فروشگاه" : "جزئیات");
   return (
     <Container className="page-section">
       <section className="empty-state">
